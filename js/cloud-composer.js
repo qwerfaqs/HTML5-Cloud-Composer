@@ -99,9 +99,97 @@ $(document).bind("pageshow", function(){
 	});
 	
 	
+	// mousemove events
+	
+	canvas.addEventListener('mousemove',function(e) { 
+		
+		//notes.splice(noteIndex, 1);
+		
+		ctx.clear();
+		processStave();
+		drawStave();
+		if (notes.length > 0) {
+			processNotes();
+			drawNotes();
+		}
+		
+		highlightNote();
+		
+		// update max value for slider
+		if (stave.width > 550) {
+			canvasSlider.attr('max',stave.width);
+			canvasSlider.slider('refresh');
+		}
+		/**
+		ctx.fillStyle = "rgba(200,0,0,0.4)";
+		// cursorHeight
+		ctx.fillRect(e.offsetX - 18, e.offsetY - 17, 16, 10);
+		
+		ctx.fillStyle = "#000";
+		**/
+		
+		/**
+		 *  Dibujar Negra
+		 */ 
+		 
+		 /**
+		var glyph = 'vb'; // negra
+		g = new Vex.Flow.Glyph(glyph, 40);
+          g.render(ctx, e.offsetX - 18, e.offsetY - 17);
+          ctx.save();
+          window.stave = stave;
+          console.debug(stave);
+          **/
+         
+        var X = e.offsetX, Y =  e.offsetY;
+        
+
+        // dibujo la x  en el lugar del cursor
+        dibujarEquis(X,Y);
+        // Publico el pentagrama para poder adivinar las notas
+        window.stave = stave;
+        window.dibujarEquis = dibujarEquis;
+        var pentagrama = [];
+        
+        for (var i = stave.getNumLines(); i >= -1; i--) {
+        	dibujarEquis((i + 5)  * 15, stave.getYForLine(i), 'red' );
+        	dibujarEquis((i + 5)  * 15, stave.getYForNote(i), 'green' );
+        };
+        /**
+        var staveNoteObj = parseNoteInput();
+
+        var note = new Vex.Flow.StaveNote(staveNoteObj);
+        if (staveNoteObj.accidental != "none" ) {
+			note.addAccidental(0, new Vex.Flow.Accidental(selectNoteAccidental.val()));
+		}
+        window.note = note;
+        **/
+        window.voice = voice;
+        window.formatter = formatter;
+        window.renderer = renderer;
+
+		
+	});
 	
 	// functions
 	
+	function dibujarEquis(X,Y, color) {
+		ctx.beginPath();
+        
+        ctx.moveTo(X, Y + 10);
+
+        // line 1
+        ctx.lineTo(X, Y - 10);
+
+        // line 2
+        ctx.moveTo(X + 10, Y);
+        ctx.lineTo(X -10, Y);
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = color ? color : 'blue';
+        ctx.stroke();
+        ctx.save();
+	}
 	function scoreOnClick(e) {
 	
 		// if notes exist enable canvas click event
